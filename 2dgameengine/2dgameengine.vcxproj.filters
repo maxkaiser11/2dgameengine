@@ -1231,4 +1231,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="libs\lua\liblua53.a" />
+  </ItemGroup>
 </Project>
