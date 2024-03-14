@@ -18,17 +18,17 @@ const unsigned int MAX_COMPONENTS = 32;
 // /////////////////////////////////////////////////////////////////
 typedef std::bitset<MAX_COMPONENTS> Signature;
 
-struct BaseComponent
+struct IComponent
 {
 protected:
 	static int nextId;
 };
 
-// Used to assigna unique id to a component type
+// Used to assign unique id to a component type
 template <typename T>
-class Component: public BaseComponent 
+class Component: public IComponent 
 {
-	// retuirns the unique id of component<T>
+	// returns the unique id of component<T>
 	static int GetId()
 	{
 		static auto id = nextId++;
@@ -167,6 +167,8 @@ public:
 
 	// component management
 	template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
+	template <typename TComponent> void RemoveComponent(Entity entity);
+	template <typename TComponent> bool HasComponent(Entity entity) const;
 
 	void AddEntityToSystem(Entity entity);
 
@@ -208,5 +210,23 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args)
 	componentPool->Set(entityId, newComponent);
 	entityComponentSignature[entityId].set(componentId);
 }
+
+template <typename TComponent>
+void Registry::RemoveComponent(Entity entity) 
+{
+	const auto componentId = Component<TComponent>::GetId();
+	const auto entityId = entity.GetId();
+	entityComponentSignatures[entityId].set(componentId, false);
+}
+
+template <typename TComponent>
+bool Registry::HasComponent(Entity entity) const 
+{
+	const auto componentId = Component<TComponent>::GetId();
+	const auto entityId = entity.GetId();
+	return entityComponentSignatures[entityId].test(componentId);
+}
+
+
 
 #endif
