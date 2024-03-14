@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <typeindex>
 #include <set>
+#include <memory>
 
 const unsigned int MAX_COMPONENTS = 32;
 
@@ -177,7 +178,7 @@ public:
 	template <typename TSystem> TSystem&  GetSystem() const;
 
 	// Checks the component signature of an entity and add the entity to the systems that are interested in it
-	void AddEntityToSystem(Entity entity);
+	void AddEntityToSystems(Entity entity);
 
 };
 
@@ -244,7 +245,7 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args)
 	TComponent newComponent(std::forward <TArgs>(args)...);
 
 	componentPool->Set(entityId, newComponent);
-	entityComponentSignature[entityId].set(componentId);
+	entityComponentSignatures[entityId].set(componentId);
 }
 
 template <typename TComponent>
