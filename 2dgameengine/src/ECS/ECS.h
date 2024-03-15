@@ -31,6 +31,7 @@ template <typename T>
 class Component: public IComponent 
 {
 	// returns the unique id of component<T>
+public:
 	static int GetId()
 	{
 		static auto id = nextId++;
@@ -233,7 +234,7 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args)
 	const auto componentId = Component<TComponent>::GetId();
 	const auto entityId = entity.GetId();
 
-	if (componentId >= componentPools.size)
+	if (componentId >= componentPools.size())
 	{
 		componentPools.resize(componentId + 1, nullptr);
 	}
@@ -255,6 +256,8 @@ void Registry::AddComponent(Entity entity, TArgs&& ...args)
 
 	componentPool->Set(entityId, newComponent);
 	entityComponentSignatures[entityId].set(componentId);
+
+	Logger::Log("component id = " + std::to_string(componentId) + " was added to entity id " + std::to_string(entityId));
 }
 
 template <typename TComponent>
